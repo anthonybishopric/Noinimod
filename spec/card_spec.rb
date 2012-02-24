@@ -33,22 +33,21 @@ describe Card do
   it "can indicate how many victory points it provides" do
     subject.victory_value.should eq(0)
   end
-  
-  it "cannot be played if it is not an action" do
-    subject.action.should be_false
-  end
-  
+    
   context "that is an action" do
     
-    before do
-      subject.is_action(true)
+    subject do
+      class ActionCardStub < CardStub
+        include Action
+      end # class methods
+      ActionCardStub
     end
     
-    it "can be played" do
-      subject.action.should be_true
+   specify do
+      subject.action?.should be_true
     end
     
-    it "has a pile size of 10" do
+    specify do
       subject.pile_size.should eq(10)
     end
     
@@ -56,10 +55,37 @@ describe Card do
   
   context "that is a victory card" do
     
-    before do
-      
+    subject do
+      class VictoryCardStub
+        include Card
+        
+        def victory_value
+          1
+        end
+      end
+      VictoryCardStub
+    end 
+    
+    specify do
+      subject.pile_size.should eq(8)
     end
     
+  end
+  
+  context "pile" do
+    
+    subject do
+      CardStub.make_pile
+    end
+    
+    specify do
+      subject.size.should eq(CardStub.pile_size)
+    end
+    
+    specify do
+      subject[0].class.should eq(CardStub)
+    end
+
   end
   
 end

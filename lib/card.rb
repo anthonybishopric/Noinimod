@@ -1,6 +1,6 @@
+require 'Action'
+
 module Card
-  
-  # required to implement:
   
   def cost
     0
@@ -23,15 +23,28 @@ module Card
   end
   
   def action?
-    @is_action
+    false
   end
   
-  def action
-    action?
+  def self.included(base)
+    base.extend(ClassMethods)
   end
   
-  def is_action(is_action)
-    @is_action = is_action
+  module ClassMethods
+
+    def pile_size
+      8
+    end
+    
+    def make_pile
+      pile = []
+      pile_size.times do 
+        pile << self.new
+      end
+      pile
+    end
+    
   end
   
 end
+
